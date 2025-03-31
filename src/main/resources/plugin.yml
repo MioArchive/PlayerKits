@@ -1,0 +1,4 @@
+name: PlayerKits
+version: 1.0
+api-version: 1.21.1
+main: net.javamio.playerkits.PlayerKits
