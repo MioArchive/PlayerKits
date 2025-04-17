@@ -10,7 +10,7 @@ public class PlayerKits extends JavaPlugin {
 
     @Getter
     public static PlayerKits instance;
-    public static Logger LOGGER = Logger.getLogger("PlayerKits");
+    public static final Logger LOGGER = Logger.getLogger("PlayerKits");
 
     @Override
     public void onEnable() {
