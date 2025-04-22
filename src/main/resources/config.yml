@@ -1,2 +1,13 @@
 
 debug-mode: false
+
+sql-configuration:
+  hostname: localhost
+  username: root
+  password: password
+  database: trybounty
+  port: 3306
+  hikariCP-configuration:
+    minimum-idle: 20
+    maximum-pool-size: 20
+    connection-timeout: 30000
