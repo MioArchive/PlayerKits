@@ -1,6 +1,7 @@
 package net.javamio.playerkits.storage.file;
 
 import net.javamio.playerkits.PlayerKits;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -32,15 +33,17 @@ public class KitFile {
     }
 
     public void save() {
-        if (config == null || file == null) {
-            PlayerKits.LOGGER.warning("Cannot save config: Config or file is null!");
-            return;
-        }
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            PlayerKits.LOGGER.warning("Failed to save kit-data.yml - " + e.getMessage());
-        }
+        Bukkit.getScheduler().runTaskAsynchronously(PlayerKits.getInstance(), ()-> {
+            if (config == null || file == null) {
+                PlayerKits.LOGGER.warning("Cannot save config: Config or file is null!");
+                return;
+            }
+            try {
+                config.save(file);
+            } catch (IOException e) {
+                PlayerKits.LOGGER.warning("Failed to save kit-data.yml - " + e.getMessage());
+            }
+        });
     }
 
 
