@@ -1,6 +1,7 @@
 package net.javamio.playerkits;
 
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -17,5 +18,11 @@ public class PlayerKits extends JavaPlugin {
         instance = this;
         saveDefaultConfig();
 
+    }
+
+    public void debug(String message) {
+        if (getConfig().getBoolean("debug-mode")) {
+            LOGGER.info(message);
+        }
     }
 }
