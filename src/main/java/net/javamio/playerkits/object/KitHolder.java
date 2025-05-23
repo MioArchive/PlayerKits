@@ -25,6 +25,6 @@ public class KitHolder {
         for (int slot = 1; slot <= 16; slot++) {
             kits.put(slot, new Kit(uuid, slot, new HashMap<>()));
         }
-        return Collections.unmodifiableMap(kits);
+        return kits;
     }
 }
