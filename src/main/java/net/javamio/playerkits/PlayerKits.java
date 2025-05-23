@@ -23,5 +23,11 @@ public class PlayerKits extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+        CommandAPI.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        CommandAPI.onDisable();
     }
 }
