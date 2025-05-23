@@ -17,7 +17,7 @@ java {
 }
 
 dependencies {
-    compileOnly(libs.paper.api)
+    implementation(libs.paper.api)
     compileOnly(libs.commandapi)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
@@ -36,8 +36,11 @@ tasks {
         archiveFileName = "${rootProject.name}-${project.version}.jar"
         archiveClassifier = null
 
+        relocate("dev.jorel.commandapi", "net.javamio.playerkits.shaded.commandapi")
+
         manifest {
             attributes["Implementation-Version"] = rootProject.version
+            attributes["paperweight-mappings-namespace"] = "mojang"
         }
     }
 
@@ -47,7 +50,7 @@ tasks {
 
     withType<JavaCompile> {
         options.encoding = Charsets.UTF_8.name()
-        options.release = 17
+        options.release = 21
     }
 
     withType<Javadoc>() {
