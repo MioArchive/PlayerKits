@@ -8,7 +8,10 @@ plugins {
 repositories {
     mavenLocal()
     mavenCentral()
+    //PaperMC
     maven("https://repo.papermc.io/repository/maven-public/")
+    //InvUI
+    maven("https://repo.xenondevs.xyz/releases")
 }
 
 java {
@@ -18,7 +21,8 @@ java {
 
 dependencies {
     implementation(libs.paper.api)
-    compileOnly(libs.commandapi)
+    implementation(libs.commandapi)
+    implementation(libs.invui)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
 }
@@ -37,6 +41,7 @@ tasks {
         archiveClassifier = null
 
         relocate("dev.jorel.commandapi", "net.javamio.playerkits.shaded.commandapi")
+        relocate("xyz.xenondevs.invui", "net.javamio.playerkits.shaded.invui")
 
         manifest {
             attributes["Implementation-Version"] = rootProject.version

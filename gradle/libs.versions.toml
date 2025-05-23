@@ -4,11 +4,13 @@ lombok = "1.18.34"
 commandapi = "9.5.1"
 shadow = "8.3.0"
 run-paper = "2.3.0"
+invui = "1.45"
 
 [libraries]
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
 lombok = { group = "org.projectlombok", name = "lombok", version.ref = "lombok" }
 commandapi = { group = "dev.jorel", name = "commandapi-bukkit-shade-mojang-mapped", version.ref = "commandapi" }
+invui = { group = "xyz.xenondevs.invui", name = "invui", version.ref = "invui"}
 
 [plugins]
 run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
