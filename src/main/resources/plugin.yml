@@ -1,8 +1,8 @@
-name: TemplatePlugin
+name: PlayerKits
 version: ${version}
 main: net.javamio.playerkits.PlayerKits
 api-version: '1.21'
 authors: [ Mio ]
 description: A personal user kit's plugin.
 load: POSTWORLD
-depend: [CommandAPI]
+#depend: [CommandAPI]
