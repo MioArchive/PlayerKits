@@ -1,7 +1,7 @@
-name: PaperPlugin-Template
+name: PlayerKits
 version: 1.0
 api-version: 1.21
-main: net.javamio.template.PaperPlugin
+main: net.javamio.playerkits.PlayerKits
 author: Mio
 website: https://mio.wtf
 folia-supported: true

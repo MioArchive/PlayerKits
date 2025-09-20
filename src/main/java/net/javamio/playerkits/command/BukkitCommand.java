@@ -1,6 +1,6 @@
-package net.javamio.template.command;
+package net.javamio.playerkits.command;
 
-import net.javamio.template.PaperPlugin;
+import net.javamio.playerkits.PlayerKits;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -57,10 +57,10 @@ public abstract class BukkitCommand extends Command {
             if (commandMap != null) {
                 commandMap.register(command.getName(), command);
             } else {
-                PaperPlugin.LOGGER.severe("CommandMap is null while registering command " + command.getName());
+                PlayerKits.LOGGER.severe("CommandMap is null while registering command " + command.getName());
             }
         } catch (ReflectiveOperationException e) {
-            PaperPlugin.LOGGER.severe("Failed to register command " + command.getName() + ": " + e.getMessage());
+            PlayerKits.LOGGER.severe("Failed to register command " + command.getName() + ": " + e.getMessage());
         }
     }
 }

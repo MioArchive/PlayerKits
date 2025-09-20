@@ -1,1 +1,1 @@
-rootProject.name = "PaperPlugin-Template"
+rootProject.name = "PlayerKits"

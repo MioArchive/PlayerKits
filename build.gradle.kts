@@ -7,7 +7,7 @@ plugins {
 
 group = "net.javamio"
 version = "1.0"
-description = "Example Plugin"
+description = "PlayerKits offers multiple personal player kits for your server."
 
 repositories {
     mavenLocal()
