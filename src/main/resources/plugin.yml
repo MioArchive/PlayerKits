@@ -1,0 +1,7 @@
+name: PaperPlugin-Template
+version: 1.0
+api-version: 1.21
+main: net.javamio.template.PaperPlugin
+author: Mio
+website: https://mio.wtf
+folia-supported: true
