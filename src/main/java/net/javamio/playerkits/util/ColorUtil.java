@@ -3,6 +3,7 @@ package net.javamio.playerkits.util;
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class ColorUtil {
 
-    public Component translateColorCodes(String message) {
+    public Component translateColorCodes(@NotNull String message) {
         message = message.replaceAll("&([0-9a-fk-or])", "§$1");
         Pattern pattern = Pattern.compile("&#([A-Fa-f0-9]{6})");
         Matcher matcher = pattern.matcher(message);

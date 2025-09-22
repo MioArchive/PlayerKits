@@ -4,4 +4,3 @@ api-version: 1.21
 main: net.javamio.playerkits.PlayerKits
 author: Mio
 website: https://mio.wtf
-folia-supported: true
