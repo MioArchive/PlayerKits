@@ -5,6 +5,7 @@ import net.javamio.playerkits.data.SqlConnection;
 import net.javamio.playerkits.data.kitroom.KitRoom;
 import net.javamio.playerkits.listener.PlayerJoinListener;
 import net.javamio.playerkits.listener.PlayerQuitListener;
+import net.javamio.playerkits.util.inventory.InventoryManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,6 +28,8 @@ public class PlayerKits extends JavaPlugin {
 
         sqlConnection = new SqlConnection();
         sqlConnection.setup();
+
+        InventoryManager.register(instance);
 
         kitRoom = new KitRoom();
         kitRoom.setup();
