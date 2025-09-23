@@ -14,4 +14,5 @@ public class PlayerQuitListener implements Listener {
 
         PlayerDataCache.unloadPlayer(player.getUniqueId());
     }
+
 }

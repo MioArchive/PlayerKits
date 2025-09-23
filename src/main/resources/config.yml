@@ -10,3 +10,5 @@ general:
 
 messages:
   prefix: "&cPlayerKits"
+  primary: "&c"
+  secondary: "&d"

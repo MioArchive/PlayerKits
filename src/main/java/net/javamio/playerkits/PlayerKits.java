@@ -1,7 +1,10 @@
 package net.javamio.playerkits;
 
 import lombok.Getter;
+import net.javamio.playerkits.command.impl.KitRoomCommand;
+import net.javamio.playerkits.command.impl.PlayerKitsCommand;
 import net.javamio.playerkits.data.SqlConnection;
+import net.javamio.playerkits.data.cache.PlayerDataCache;
 import net.javamio.playerkits.data.kitroom.KitRoom;
 import net.javamio.playerkits.listener.PlayerJoinListener;
 import net.javamio.playerkits.listener.PlayerQuitListener;
@@ -38,9 +41,14 @@ public class PlayerKits extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), instance);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(), instance);
 
+        new PlayerKitsCommand();
+        new KitRoomCommand();
+
+        //TODO(Mio) - Auto save
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getOnlinePlayers().forEach(player -> PlayerDataCache.unloadPlayer(player.getUniqueId()));
     }
 }

@@ -36,9 +36,10 @@ public class SqlConnection {
         }
     }
 
-    public void createTables() { // no need to execute this asynchronously as it's only invoked on startup
-        String[] statements = {
-                """
+    public void createTables() {
+        Thread.ofVirtual().start(() -> {
+            String[] statements = {
+                    """
             CREATE TABLE IF NOT EXISTS player_kits (
                 player_uuid VARCHAR(36) NOT NULL,
                 kit_number INT NOT NULL,
@@ -50,7 +51,7 @@ public class SqlConnection {
                 INDEX idx_updated_at (updated_at)
             )
             """,
-                """
+                    """
             CREATE TABLE IF NOT EXISTS kit_room (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 category VARCHAR(50) NOT NULL,
@@ -59,18 +60,19 @@ public class SqlConnection {
                 INDEX idx_category (category)
             )
             """
-        };
+            };
 
-        try (Connection connection = getConnection();
-             Statement stmt = connection.createStatement()) {
+            try (Connection connection = getConnection();
+                 Statement stmt = connection.createStatement()) {
 
-            for (String sql : statements) stmt.executeUpdate(sql);
-            PlayerKits.LOGGER.info("Database tables created successfully");
+                for (String sql : statements) stmt.executeUpdate(sql);
+                PlayerKits.LOGGER.info("Database tables created successfully");
 
-        } catch (SQLException e) {
-            PlayerKits.LOGGER.severe("Failed to create database tables: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
+            } catch (SQLException e) {
+                PlayerKits.LOGGER.severe("Failed to create database tables: " + e.getMessage());
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 }

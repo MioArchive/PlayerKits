@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class ColorUtil {
 
+    public static final String PRIMARY = "";
+    public static final String SECONDARY = "";
+    
     public Component translateColorCodes(@NotNull String message) {
         message = message.replaceAll("&([0-9a-fk-or])", "§$1");
         Pattern pattern = Pattern.compile("&#([A-Fa-f0-9]{6})");

@@ -55,7 +55,7 @@ public abstract class BukkitCommand extends Command {
             CommandMap commandMap = (CommandMap) bukkitCommandMap.get(Bukkit.getServer());
 
             if (commandMap != null) {
-                commandMap.register(command.getName(), command);
+                commandMap.register("playerkits", command);
             } else {
                 PlayerKits.LOGGER.severe("CommandMap is null while registering command " + command.getName());
             }
