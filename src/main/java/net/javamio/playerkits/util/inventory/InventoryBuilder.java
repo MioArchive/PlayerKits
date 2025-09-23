@@ -1,18 +1,17 @@
 package net.javamio.playerkits.util.inventory;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.javamio.playerkits.PlayerKits;
 import net.javamio.playerkits.util.ColorUtil;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
-import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.inventory.*;
+import org.bukkit.inventory.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,103 +21,90 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+@Getter
+@Accessors(fluent = true)
 public class InventoryBuilder implements InventoryHolder {
 
-    public final Map<Integer, Consumer<InventoryClickEvent>> itemHandlers = new HashMap<>();
-    private final List<Consumer<InventoryOpenEvent>> openHandlers = new ArrayList<>();
-    private final List<Consumer<InventoryCloseEvent>> closeHandlers = new ArrayList<>();
-    private final List<Consumer<InventoryClickEvent>> clickHandlers = new ArrayList<>();
-    private final Map<Integer, Integer> multiItemIndices = new HashMap<>();
+    // Credits @ yyuh </3
 
-    private final Inventory inventory;
-    private boolean isSafe = false;
-    private boolean isEditor = false;
+    private final @NotNull Map<Integer, Consumer<InventoryClickEvent>> itemHandlers = new HashMap<>();
+    private final @NotNull List<Consumer<InventoryOpenEvent>> openHandlers = new ArrayList<>();
+    private final @NotNull List<Consumer<InventoryCloseEvent>> closeHandlers = new ArrayList<>();
+    private final @NotNull List<Consumer<InventoryClickEvent>> clickHandlers = new ArrayList<>();
+    private final @NotNull Map<Integer, Integer> multiItemIndices = new HashMap<>();
 
-    private Predicate<Player> closeFilter;
+    private final @NotNull Inventory inventory;
 
-    public void setSafe(boolean safe) {
-        isSafe = safe;
-    }
+    @Setter private boolean isSafe = false;
+    @Setter private boolean isEditor = false;
+    @Setter private Predicate<Player> closeFilter;
 
-    public void setEditor(boolean editor) {
-        isEditor = editor;
-    }
-
-    public void setCloseFilter(Predicate<Player> closeFilter) {
-        this.closeFilter = closeFilter;
-    }
-
-    public InventoryBuilder(int size) {
+    public InventoryBuilder(final int size) {
         this(owner -> Bukkit.createInventory(owner, size));
     }
 
-    public InventoryBuilder(int size, Component title, boolean safe) {
+    public InventoryBuilder(final int size, final @NotNull Component title, final boolean safe) {
         this(owner -> Bukkit.createInventory(owner, size, title));
-        isSafe = safe;
+        this.isSafe = safe;
     }
 
-    public InventoryBuilder(int size, String title, boolean safe) {
+    public InventoryBuilder(final int size, final @NotNull String title, final boolean safe) {
         this(owner -> Bukkit.createInventory(owner, size, ColorUtil.translateColorCodes(title)));
-        isSafe = safe;
+        this.isSafe = safe;
     }
 
-    public InventoryBuilder(int size, Component title) {
+    public InventoryBuilder(final int size, final @NotNull Component title) {
         this(owner -> Bukkit.createInventory(owner, size, title));
     }
 
-    public InventoryBuilder(int size, String title) {
+    public InventoryBuilder(final int size, final @NotNull String title) {
         this(owner -> Bukkit.createInventory(owner, size, ColorUtil.translateColorCodes(title)));
     }
 
-    public InventoryBuilder(String title, InventoryType type){
+    public InventoryBuilder(final @NotNull String title, final @NotNull InventoryType type){
         this(owner -> Bukkit.createInventory(owner, type));
     }
 
-    public InventoryBuilder(InventoryType type) {
+    public InventoryBuilder(final @NotNull InventoryType type) {
         this(owner -> Bukkit.createInventory(owner, type));
     }
 
-    public InventoryBuilder(InventoryType type, Component title) {
+    public InventoryBuilder(final @NotNull InventoryType type, final @NotNull Component title) {
         this(owner -> Bukkit.createInventory(owner, type, title));
     }
 
-    public InventoryBuilder(InventoryType type, String title) {
+    public InventoryBuilder(final @NotNull InventoryType type, final @NotNull String title) {
         this(owner -> Bukkit.createInventory(owner, type, ColorUtil.translateColorCodes(title)));
     }
 
-    public InventoryBuilder(Function<InventoryHolder, Inventory> inventoryFunction) {
-        Objects.requireNonNull(inventoryFunction, "inventoryFunction");
-        Inventory inv = inventoryFunction.apply(this);
+    public InventoryBuilder(final @NonNull Function<InventoryHolder, Inventory> inventoryFunction) {
+        final Inventory inv = Objects.requireNonNull(inventoryFunction, "inventoryFunction").apply(this);
 
         if (inv.getHolder() != this) {
-            throw new IllegalStateException("Inventory holder is not FastInv, found: " + inv.getHolder());
+            throw new IllegalStateException("Inventory holder is not InventoryBuilder, found: " + inv.getHolder());
         }
 
         this.inventory = inv;
     }
 
-    protected void onOpen(InventoryOpenEvent event) {
-    }
+    protected void onOpen(final @NotNull InventoryOpenEvent event) { }
+    protected void onClick(final @NotNull InventoryClickEvent event) { }
+    protected void onClose(final @NotNull InventoryCloseEvent event) { }
 
-    protected void onClick(InventoryClickEvent event) {
-    }
-
-    protected void onClose(InventoryCloseEvent event) {
-    }
-
-    public void addItem(ItemStack item) {
+    public void addItem(final @NotNull ItemStack item) {
         addItem(item, null);
     }
 
-    public void addItem(ItemStack item, Consumer<InventoryClickEvent> handler) {
-        int slot = this.inventory.firstEmpty();
+    public void addItem(final @NotNull ItemStack item, final Consumer<InventoryClickEvent> handler) {
+        final int slot = this.inventory.firstEmpty();
         if (slot >= 0) {
             setItem(slot, item, handler);
         }
     }
 
-    public void setAnimatedItem(int slot, ItemStack[] stacks, int delay, Consumer<InventoryClickEvent> handler){
-        new BukkitRunnable(){
+    public void setAnimatedItem(final int slot, final @NotNull ItemStack[] stacks, final int delay,
+                                final Consumer<InventoryClickEvent> handler) {
+        new BukkitRunnable() {
             int frame = 0;
             @Override
             public void run() {
@@ -128,13 +114,12 @@ public class InventoryBuilder implements InventoryHolder {
         }.runTaskTimerAsynchronously(PlayerKits.getInstance(), 0, delay);
     }
 
-    public void setItem(int slot, ItemStack item) {
+    public void setItem(final int slot, final @NotNull ItemStack item) {
         setItem(slot, item, null);
     }
 
-    public void setItem(int slot, ItemStack item, Consumer<InventoryClickEvent> handler) {
+    public void setItem(final int slot, final @NotNull ItemStack item, final Consumer<InventoryClickEvent> handler) {
         this.inventory.setItem(slot, item);
-
         if (handler != null) {
             this.itemHandlers.put(slot, handler);
         } else {
@@ -142,71 +127,55 @@ public class InventoryBuilder implements InventoryHolder {
         }
     }
 
-    public void setItems(int slotFrom, int slotTo, ItemStack item) {
+    public void setItems(final int slotFrom, final int slotTo, final @NotNull ItemStack item) {
         setItems(slotFrom, slotTo, item, null);
     }
 
-    public void setItems(int slotFrom, int slotTo, ItemStack item, Consumer<InventoryClickEvent> handler) {
+    public void setItems(final int slotFrom, final int slotTo, final @NotNull ItemStack item, final Consumer<InventoryClickEvent> handler) {
         for (int i = slotFrom; i <= slotTo; i++) {
             setItem(i, item, handler);
         }
     }
 
-    public void setItems(int[] slots, ItemStack item) {
+    public void setItems(final int[] slots, final @NotNull ItemStack item) {
         setItems(slots, item, null);
     }
 
-    public void setItems(int[] slots, ItemStack item, Consumer<InventoryClickEvent> handler) {
-        for (int slot : slots) {
+    public void setItems(final int[] slots, final @NotNull ItemStack item, final Consumer<InventoryClickEvent> handler) {
+        for (final int slot : slots) {
             setItem(slot, item, handler);
         }
     }
 
-    public void setMultiItem(int slot, List<ItemStack> stacks, Consumer<InventoryClickEvent> handler) {
-        if (stacks == null || stacks.isEmpty()) {
-            throw new IllegalArgumentException("The list of the items cannot be null or empty.");
+    public void setMultiItem(final int slot, final @NotNull List<ItemStack> stacks, final Consumer<InventoryClickEvent> handler) {
+        if (stacks.isEmpty()) {
+            throw new IllegalArgumentException("Item list cannot be empty.");
         }
+
         multiItemIndices.putIfAbsent(slot, 0);
-        int currentIndex = multiItemIndices.get(slot);
+        final int currentIndex = multiItemIndices.get(slot);
+
         setItem(slot, stacks.get(currentIndex), event -> {
-            if(event.getClick().isRightClick()){
-                int idx = multiItemIndices.get(slot);
-                idx = (idx - 1 + stacks.size()) % stacks.size();
-                multiItemIndices.put(slot, idx);
-                setItem(slot, stacks.get(idx), this.itemHandlers.get(slot));
-                if (handler != null) {
-                    handler.accept(event);
-                }
-                return;
-            }
             int idx = multiItemIndices.get(slot);
-            idx = (idx + 1) % stacks.size();
+            final int delta = event.getClick().isRightClick() ? -1 : 1;
+            idx = (idx + delta + stacks.size()) % stacks.size();
+
             multiItemIndices.put(slot, idx);
-            setItem(slot, stacks.get(idx), this.itemHandlers.get(slot));
+            setItem(slot, stacks.get(idx), itemHandlers.get(slot));
+
             if (handler != null) {
                 handler.accept(event);
             }
         });
     }
 
-    /**
-     *
-     * @param slot Inventory Slot
-     * @param trueItem Item that will display when swapItemBool is true
-     * @param falseItem Item that will display when swapItemBool is false
-     * @param swapItemBool If true, trueItem will be displayed, otherwise falseItem will be displayed
-     * @param action Action to be performed when item is clicked (only if swapItemBool is false)
-     */
-
-    public void setSwapDisplay(int slot, ItemStack trueItem, ItemStack falseItem, boolean swapItemBool, Consumer<InventoryClickEvent> action) {
-        Consumer<InventoryClickEvent> handler = event -> {
+    public void setSwapDisplay(final int slot, final @NotNull ItemStack trueItem, final @NotNull ItemStack falseItem, final boolean swapItemBool, final @NotNull Consumer<InventoryClickEvent> action) {
+        final Consumer<InventoryClickEvent> handler = event -> {
             event.setCancelled(true);
             action.accept(event);
         };
         if (swapItemBool) {
-            setItem(slot, trueItem, event -> {
-                event.setCancelled(true);
-            });
+            setItem(slot, trueItem, event -> event.setCancelled(true));
         } else {
             setItem(slot, falseItem, event -> {
                 setItem(slot, trueItem, handler);
@@ -215,9 +184,8 @@ public class InventoryBuilder implements InventoryHolder {
         }
     }
 
-
-    public void setSwapItem(int slot, ItemStack trueItem, ItemStack falseItem, boolean swapItemBool, Consumer<InventoryClickEvent> trueHandler, Consumer<InventoryClickEvent> falseHandler) {
-        Consumer<InventoryClickEvent> handler = event -> {
+    public void setSwapItem(final int slot, final @NotNull ItemStack trueItem, final @NotNull ItemStack falseItem, final boolean swapItemBool, final @NotNull Consumer<InventoryClickEvent> trueHandler, final @NotNull Consumer<InventoryClickEvent> falseHandler) {
+        final Consumer<InventoryClickEvent> handler = event -> {
             event.setCancelled(true);
             setSwapItem(slot, trueItem, falseItem, !swapItemBool, trueHandler, falseHandler);
         };
@@ -235,118 +203,104 @@ public class InventoryBuilder implements InventoryHolder {
         }
     }
 
-    public void setPlaceholders(int... slot){
-        for(int x : slot){
+    public void setPlaceholders(final int... slot){
+        for(final int x : slot){
             setItem(x, ItemBuilder.item(Material.GRAY_STAINED_GLASS_PANE).tooltip(false).build(),
                     event -> event.setCancelled(true));
         }
     }
 
-    public void setPlaceholder(int slot, Material item){
+    public void setPlaceholder(final int slot, final @NotNull Material item){
         setItem(slot, ItemBuilder.item(item).tooltip(false).build(),
                 event -> event.setCancelled(true));
     }
 
-    public void setPlaceholder(int slot){
+    public void setPlaceholder(final int slot){
         setItem(slot, ItemBuilder.item(Material.GRAY_STAINED_GLASS_PANE).tooltip(false).build(),
                 event -> event.setCancelled(true));
     }
 
-    public void removeItem(int slot) {
+    public void removeItem(final int slot) {
         this.inventory.clear(slot);
         this.itemHandlers.remove(slot);
     }
 
-    public void removeItems(int... slots) {
-        for (int slot : slots) {
+    public void removeItems(final int... slots) {
+        for (final int slot : slots) {
             removeItem(slot);
         }
     }
 
-    public InventoryBuilder fill(@NotNull ItemStack filler, @NotNull String... pattern) {
-        int row = 0;
-        int size = inventory.getSize();
-
-        for (String rowPattern : pattern) {
-            if (row < size / 9) {
-                String[] rowCharacters = rowPattern.split(" ");
-
-                for (int col = 0; col < rowCharacters.length && col < 9; col++) {
-                    String character = rowCharacters[col];
-                    int slot = col + row * 9;
-
-                    if (character.equals("X")) {
-                        setItem(slot, filler, event -> event.setCancelled(true));
-                    }
+    public @NotNull InventoryBuilder fill(final @NotNull ItemStack filler, final @NotNull String... pattern) {
+        final int rows = inventory.getSize() / 9;
+        for (int row = 0; row < pattern.length && row < rows; row++) {
+            final String[] rowChars = pattern[row].split(" ");
+            for (int col = 0; col < Math.min(rowChars.length, 9); col++) {
+                if ("X".equals(rowChars[col])) {
+                    final int slot = row * 9 + col;
+                    setItem(slot, filler, e -> e.setCancelled(true));
                 }
-
-                row++;
             }
         }
         return this;
     }
 
-    public void fill(List<AbstractItem> stacks, String... pattern) {
-        int row = 0;
-        int size = inventory.getSize();
+    public void fill(final @NotNull List<AbstractItem> stacks, final @NotNull String... pattern) {
+        final int rows = inventory.getSize() / 9;
         int itemIndex = 0;
 
-        for (String rowPattern : pattern) {
-            if (row < size / 9) {
-                String[] rowCharacters = rowPattern.split(" ");
-
-                for (int col = 0; col < rowCharacters.length && col < 9; col++) {
-                    String character = rowCharacters[col];
-                    int slot = col + row * 9;
-
-                    if (character.equals("X") && itemIndex < stacks.size()) {
-                        AbstractItem item = stacks.get(itemIndex);
-                        if (item == null) continue;
+        for (int row = 0; row < pattern.length && row < rows; row++) {
+            final String[] rowChars = pattern[row].split(" ");
+            for (int col = 0; col < Math.min(rowChars.length, 9); col++) {
+                if ("X".equals(rowChars[col]) && itemIndex < stacks.size()) {
+                    final AbstractItem item = stacks.get(itemIndex++);
+                    if (item != null) {
+                        final int slot = row * 9 + col;
                         setItem(slot, item.getStack(), item.getHandler());
-                        itemIndex++;
                     }
                 }
-                row++;
             }
         }
     }
 
-
-
-
-    public void setSafety(boolean b){
+    public void setSafety(final boolean b){
         isSafe = b;
     }
 
-    public void addOpenHandler(Consumer<InventoryOpenEvent> openHandler) {
+    public void addOpenHandler(final @NotNull Consumer<InventoryOpenEvent> openHandler) {
         this.openHandlers.add(openHandler);
     }
 
-    public void addCloseHandler(Consumer<InventoryCloseEvent> closeHandler) {
+    public void addCloseHandler(final @NotNull Consumer<InventoryCloseEvent> closeHandler) {
         this.closeHandlers.add(closeHandler);
     }
 
-    public void addClickHandler(Consumer<InventoryClickEvent> clickHandler) {
+    public void addClickHandler(final @NotNull Consumer<InventoryClickEvent> clickHandler) {
         this.clickHandlers.add(clickHandler);
     }
 
-    public void open(Player player) {
-        Bukkit.getScheduler().runTask(PlayerKits.getInstance(), () -> {
-            player.openInventory(this.inventory);
-        });
+    public void open(final @NotNull Player player) {
+        Bukkit.getScheduler().runTask(PlayerKits.getInstance(),
+                () -> player.openInventory(this.inventory));
     }
 
     public int[] getBorders() {
-        int size = this.inventory.getSize();
-        return IntStream.range(0, size).filter(i -> size < 27 || i < 9
-                || i % 9 == 0 || (i - 8) % 9 == 0 || i > size - 9).toArray();
+        final int size = this.inventory.getSize();
+        return IntStream.range(0, size)
+                .filter(i -> size < 27 || i < 9
+                        || i % 9 == 0 || (i - 8) % 9 == 0
+                        || i > size - 9)
+                .toArray();
     }
 
     public int[] getCorners() {
-        int size = this.inventory.getSize();
-        return IntStream.range(0, size).filter(i -> i < 2 || (i > 6 && i < 10)
-                || i == 17 || i == size - 18
-                || (i > size - 11 && i < size - 7) || i > size - 3).toArray();
+        final int size = this.inventory.getSize();
+        return IntStream.range(0, size)
+                .filter(i -> i < 2 || (i > 6 && i < 10)
+                        || i == 17 || i == size - 18
+                        || (i > size - 11 && i < size - 7)
+                        || i > size - 3)
+                .toArray();
     }
 
     @Override
@@ -354,40 +308,34 @@ public class InventoryBuilder implements InventoryHolder {
         return this.inventory;
     }
 
-    public ItemStack getItem(int x){
-        if(getInventory().getItem(x) == null){
-            return new ItemStack(Material.AIR);
-        }
-        return getInventory().getItem(x);
+    public @NotNull ItemStack getItem(final int index){
+        final ItemStack item = getInventory().getItem(index);
+        return item == null ? new ItemStack(Material.AIR) : item;
     }
-    void handleOpen(InventoryOpenEvent event) {
-        onOpen(event);
 
+    void handleOpen(final @NotNull InventoryOpenEvent event) {
+        onOpen(event);
         this.openHandlers.forEach(c -> c.accept(event));
     }
 
-    boolean handleClose(InventoryCloseEvent event) {
+    boolean handleClose(final @NotNull InventoryCloseEvent event) {
         onClose(event);
-
         this.closeHandlers.forEach(c -> c.accept(event));
-
         return this.closeFilter != null && this.closeFilter.test((Player) event.getPlayer());
     }
 
     boolean isSafe(){
         return isSafe;
     }
+
     boolean isEditor() {
         return isEditor;
     }
 
-    void handleClick(InventoryClickEvent event) {
+    void handleClick(final @NotNull InventoryClickEvent event) {
         onClick(event);
-
         this.clickHandlers.forEach(c -> c.accept(event));
-
-        Consumer<InventoryClickEvent> clickConsumer = this.itemHandlers.get(event.getRawSlot());
-
+        final Consumer<InventoryClickEvent> clickConsumer = this.itemHandlers.get(event.getRawSlot());
         if (clickConsumer != null) {
             clickConsumer.accept(event);
         }
