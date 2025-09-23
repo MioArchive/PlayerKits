@@ -28,6 +28,7 @@ public class PlayerKits extends JavaPlugin {
 
         sqlConnection = new SqlConnection();
         sqlConnection.setup();
+        sqlConnection.createTables();
 
         InventoryManager.register(instance);
 
@@ -41,6 +42,5 @@ public class PlayerKits extends JavaPlugin {
 
     @Override
     public void onDisable() {
-
     }
 }
