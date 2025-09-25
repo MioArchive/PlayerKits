@@ -1,4 +1,4 @@
-package net.javamio.playerkits.data.cache;
+package net.javamio.playerkits.data.playerkit.cache;
 
 import lombok.experimental.UtilityClass;
 import net.javamio.playerkits.PlayerKits;

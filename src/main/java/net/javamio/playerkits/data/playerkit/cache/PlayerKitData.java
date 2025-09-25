@@ -1,6 +1,8 @@
-package net.javamio.playerkits.data.cache;
+package net.javamio.playerkits.data.playerkit.cache;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -8,27 +10,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
+@Data
+@RequiredArgsConstructor
 public class PlayerKitData {
 
-    @Getter
-    private final UUID playerUUID;
-    private final Map<Integer, Map<Integer, ItemStack>> cachedKits;
-    private final Map<Integer, Long> kitLoadTimes;
-    private final long loadTime;
+    private final @NotNull UUID playerUUID;
+    private final @NotNull Map<Integer, Map<Integer, ItemStack>> cachedKits = new ConcurrentHashMap<>();
+    private final @NotNull Map<Integer, Long> kitLoadTimes = new ConcurrentHashMap<>();
+    private final long loadTime = System.currentTimeMillis();
 
-    public PlayerKitData(UUID playerUUID) {
-        this.playerUUID = playerUUID;
-        this.cachedKits = new ConcurrentHashMap<>();
-        this.kitLoadTimes = new ConcurrentHashMap<>();
-        this.loadTime = System.currentTimeMillis();
-    }
-
-    public void cacheKit(int kitNumber, Map<Integer, ItemStack> contents) {
-        if (contents == null) {
-            contents = new HashMap<>();
-        }
-
+    public void cacheKit(int kitNumber, @NotNull Map<Integer, ItemStack> contents) {
         Map<Integer, ItemStack> clonedContents = new HashMap<>();
         for (Map.Entry<Integer, ItemStack> entry : contents.entrySet()) {
             ItemStack item = entry.getValue();
@@ -41,7 +32,7 @@ public class PlayerKitData {
         kitLoadTimes.put(kitNumber, System.currentTimeMillis());
     }
 
-    public Map<Integer, ItemStack> getCachedKit(int kitNumber) {
+    public @NotNull Map<Integer, ItemStack> getCachedKit(int kitNumber) {
         Map<Integer, ItemStack> kit = cachedKits.get(kitNumber);
         if (kit == null) {
             return new HashMap<>();
@@ -79,5 +70,4 @@ public class PlayerKitData {
     public long getKitLoadTime(int kitNumber) {
         return kitLoadTimes.getOrDefault(kitNumber, 0L);
     }
-
 }
