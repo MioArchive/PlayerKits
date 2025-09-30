@@ -18,7 +18,6 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.commandapi)
     compileOnly(libs.paper.api)
     compileOnly(libs.lombok)
     annotationProcessor(libs.lombok)
