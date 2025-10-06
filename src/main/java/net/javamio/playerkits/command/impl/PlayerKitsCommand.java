@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class PlayerKitsCommand extends BukkitCommand {
@@ -100,28 +101,28 @@ public class PlayerKitsCommand extends BukkitCommand {
         List<String> suggestions = new ArrayList<>();
 
         if (args.length == 1) {
-            suggestions.add("reload");
-            suggestions.add("database");
-            suggestions.add("kitroom");
+            return List.of("reload", "database", "kitroom");
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("kitroom")) {
-            suggestions.add("reload");
-            suggestions.add("edit");
-        }
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("kitroom")) {
+                return List.of("reload", "edit");
+            }
 
-        if (args.length == 3 && args[0].equalsIgnoreCase("kitroom") && args[1].equalsIgnoreCase("edit")) {
-            for (KitRoomCategory kitRoomCategory : KitRoomCategory.values()) {
-                suggestions.add(kitRoomCategory.name().toLowerCase());
+            if (args[0].equalsIgnoreCase("database")) {
+                return List.of("reconnect", "disconnect", "connect");
             }
         }
 
-        if (args.length == 2 && args[0].equalsIgnoreCase("database")) {
-            suggestions.add("reconnect");
-            suggestions.add("disconnect");
-            suggestions.add("connect");
+        if (args.length == 3
+                && args[0].equalsIgnoreCase("kitroom")
+                && args[1].equalsIgnoreCase("edit")) {
+            return Arrays.stream(KitRoomCategory.values())
+                    .map(c -> c.name().toLowerCase())
+                    .toList();
         }
 
         return suggestions;
     }
+
 }
