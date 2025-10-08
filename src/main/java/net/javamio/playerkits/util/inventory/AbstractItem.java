@@ -1,16 +1,10 @@
 package net.javamio.playerkits.util.inventory;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.function.Consumer;
 
-@Getter
-@RequiredArgsConstructor
-public class AbstractItem {
+public record AbstractItem(ItemStack stack, Consumer<InventoryClickEvent> handler) {
 
-    private final ItemStack stack;
-    private final Consumer<InventoryClickEvent> handler;
 }

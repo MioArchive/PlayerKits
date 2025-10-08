@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 @UtilityClass
+@SuppressWarnings("unused")
 public class MessageUtil {
 
     public @NotNull String getPrefix() {

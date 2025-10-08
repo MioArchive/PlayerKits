@@ -28,6 +28,7 @@ import java.util.stream.IntStream;
 
 @Getter
 @Accessors(fluent = true)
+@SuppressWarnings("unused")
 public class InventoryBuilder implements InventoryHolder {
 
     // Credits @ yyuh </3
@@ -261,7 +262,7 @@ public class InventoryBuilder implements InventoryHolder {
                     final AbstractItem item = stacks.get(itemIndex++);
                     if (item != null) {
                         final int slot = row * 9 + col;
-                        setItem(slot, item.getStack(), item.getHandler());
+                        setItem(slot, item.stack(), item.handler());
                     }
                 }
             }
