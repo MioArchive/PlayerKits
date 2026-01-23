@@ -5,6 +5,8 @@ import net.javamio.playerkits.command.impl.KitRoomCommand;
 import net.javamio.playerkits.command.impl.PlayerKitsCommand;
 import net.javamio.playerkits.data.SqlConnection;
 import net.javamio.playerkits.data.kitroom.KitRoom;
+import net.javamio.playerkits.data.playerkit.PlayerKit;
+import net.javamio.playerkits.data.playerkit.PlayerKitManager;
 import net.javamio.playerkits.data.playerkit.cache.PlayerDataCache;
 import net.javamio.playerkits.listener.PlayerJoinListener;
 import net.javamio.playerkits.listener.PlayerQuitListener;
@@ -23,6 +25,7 @@ public class PlayerKits extends JavaPlugin {
     private static PlayerKits instance;
     private SqlConnection sqlConnection;
     private KitRoom kitRoom;
+    private PlayerKitManager playerKitManager;
 
     @Override
     public void onEnable() {
@@ -37,6 +40,8 @@ public class PlayerKits extends JavaPlugin {
 
         kitRoom = new KitRoom();
         kitRoom.setup();
+
+        playerKitManager = new PlayerKitManager(new PlayerKit());
 
         Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), instance);
         Bukkit.getPluginManager().registerEvents(new PlayerQuitListener(), instance);
